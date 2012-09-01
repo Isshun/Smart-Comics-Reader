@@ -1,0 +1,59 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="top"
+    android:orientation="vertical" >
+
+    <ImageView
+    android:id="@+id/imageView"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_weight="1"
+    android:src="@drawable/ic_action_search" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:orientation="horizontal" >
+        
+    <Button
+        android:id="@+id/btPrev"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Prev" />
+
+    <Button
+        android:id="@+id/btOut"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Zoom out" />
+
+    <Button
+        android:id="@+id/btIn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Zoom in" />
+
+    <Button
+        android:id="@+id/btNext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Next" />
+
+    <TextView
+        android:id="@+id/lbPage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/lbZoom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
+
+    </LinearLayout>
+
+</LinearLayout>

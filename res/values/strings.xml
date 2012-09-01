@@ -1,0 +1,10 @@
+<resources>
+
+    <string name="app_name">Smart Comics Reader</string>
+    <string name="title_book_detail">Book Detail</string>
+    <string name="title_book_list">Books</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_full_screen">FullScreenActivity</string>
+
+</resources>
