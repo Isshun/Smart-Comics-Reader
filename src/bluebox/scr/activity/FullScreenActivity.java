@@ -25,6 +25,7 @@ public class FullScreenActivity extends Activity implements OnClickListener
 	private String _currentPath;
 	private int _currentZoom = 1;
 	private float _currentPage = 0;
+	private int _maxPage;
 	
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -99,6 +100,8 @@ public class FullScreenActivity extends Activity implements OnClickListener
                 return s1.compareToIgnoreCase(s2);
             }
         });
+        
+        _maxPage = _fileList.size();
 	}
 
 	@Override
@@ -112,9 +115,9 @@ public class FullScreenActivity extends Activity implements OnClickListener
 		switch (v.getId())
 		{
 			case R.id.btPrev: if (_currentPage > 0) _currentPage--; break;
-			case R.id.btNext: if (_currentPage < _fileList.size())_currentPage++; break;
-			case R.id.btIn: if (_currentZoom < 3) { _currentZoom++; _currentPage *= 2; } break;
-			case R.id.btOut: if (_currentZoom > 1) { _currentZoom--; _currentPage /= 2; } break;
+			case R.id.btNext: if (_currentPage + 1 < _maxPage)_currentPage++; break;
+			case R.id.btIn: if (_currentZoom < 3) { _currentZoom++; _currentPage *= 2; _maxPage *= 2; } break;
+			case R.id.btOut: if (_currentZoom > 1) { _currentZoom--; _currentPage /= 2; _maxPage /= 2; } break;
 		}
 		
 		refreshInterface();
