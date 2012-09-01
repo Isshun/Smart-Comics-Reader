@@ -9,7 +9,6 @@ import java.util.List;
 import bluebox.scr.R;
 import bluebox.scr.fragment.BookDetailFragment;
 import android.os.Bundle;
-import android.os.Environment;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
