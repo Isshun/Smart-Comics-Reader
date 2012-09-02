@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="bluebox.scr"
+    package="bluebox.SmartComicsReader"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -12,7 +12,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".activity.BookListActivity"
+            android:name="bluebox.SmartComicsReader.Activity.BookListActivity"
             android:label="@string/title_book_list" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,14 +20,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.BookDetailActivity"
+            android:name="bluebox.SmartComicsReader.Activity.BookDetailActivity"
             android:label="@string/title_book_detail" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".BookListActivity" />
         </activity>
         <activity
-            android:name=".activity.FullScreenActivity"
+            android:name="bluebox.SmartComicsReader.Activity.FullScreenActivity"
             android:label="@string/title_activity_full_screen" android:theme="@android:style/Theme.NoTitleBar.OverlayActionModes" android:hardwareAccelerated="true">
         </activity>
     </application>

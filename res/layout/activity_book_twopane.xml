@@ -9,7 +9,7 @@
     android:showDividers="middle"
     tools:context=".BookListActivity">
 
-    <fragment android:name="bluebox.scr.fragment.BookListFragment"
+    <fragment android:name="bluebox.SmartComicsReader.Fragment.BookListFragment"
         android:id="@+id/book_list"
         android:layout_width="0dp"
         android:layout_height="match_parent"

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bluebox.scr.data;
+package bluebox.SmartComicsReader.Data;
 
 import java.io.File;
 

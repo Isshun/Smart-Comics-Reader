@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bluebox.scr.fragment;
+package bluebox.SmartComicsReader.Fragment;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -23,8 +23,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import bluebox.scr.data.Book;
-import android.R;
+import bluebox.SmartComicsReader.Data.Book;
+import bluebox.SmartComicsReader.R;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Environment;

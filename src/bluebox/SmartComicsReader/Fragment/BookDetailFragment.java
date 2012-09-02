@@ -15,11 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package bluebox.scr.fragment;
+package bluebox.SmartComicsReader.Fragment;
 
-import bluebox.scr.R;
-import bluebox.scr.activity.FullScreenActivity;
-import bluebox.scr.data.Book;
+import bluebox.SmartComicsReader.Activity.FullScreenActivity;
+import bluebox.SmartComicsReader.Data.Book;
+import bluebox.SmartComicsReader.R;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
