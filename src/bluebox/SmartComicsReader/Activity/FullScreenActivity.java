@@ -19,16 +19,13 @@ package bluebox.SmartComicsReader.Activity;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import bluebox.SmartComicsReader.R;
-import bluebox.SmartComicsReader.Core.SmoothScroll;
 import bluebox.SmartComicsReader.Fragment.BookDetailFragment;
 import android.os.Bundle;
-import android.os.Handler;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -37,19 +34,16 @@ import android.view.Display;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
-import android.view.View.OnGenericMotionListener;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
-public class FullScreenActivity extends Activity implements OnClickListener, OnTouchListener, OnGenericMotionListener
+public class FullScreenActivity extends Activity implements OnClickListener, OnTouchListener
 {
 	private List<String>			_fileList = new ArrayList<String>();
 	private String 					_currentPath;
@@ -220,9 +214,6 @@ public class FullScreenActivity extends Activity implements OnClickListener, OnT
             {
     			_onScroll = true;
     			
-            	//if (_imageScroll.getScrollX() != display.getWidth())
-            		//return false;
-
             	_lastX = (int)event.getX();
             	_lastY = (int)event.getY();
         		break;
@@ -289,7 +280,6 @@ public class FullScreenActivity extends Activity implements OnClickListener, OnT
             	//break;
             }
         }
-        // if you return false, these actions will not be recorded
         return false;
 	}
 
@@ -307,12 +297,4 @@ public class FullScreenActivity extends Activity implements OnClickListener, OnT
         	_imageScroll.scrollTo(display.getWidth() , 0);
     	}
 	}
-
-	public boolean onGenericMotion(View v, MotionEvent event) {
-
-		Log.w("bluebox.scr", "plop");
-		
-		return false;
-	}
-
 }
