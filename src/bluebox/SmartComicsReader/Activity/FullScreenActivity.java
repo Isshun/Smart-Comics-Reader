@@ -56,7 +56,8 @@ public class FullScreenActivity extends Activity implements OnClickListener, OnT
 	private HorizontalScrollView	_imageScroll;
 	private int						_lastX;
 	private int						_lastY;
-	private boolean _onScroll;
+	private boolean 				_onScroll;
+	private int 					_direction;
 	
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -94,30 +95,26 @@ public class FullScreenActivity extends Activity implements OnClickListener, OnT
         redrawPage();
     }
 
-//    @Override
-//    public void onResume()
-//    {
-//    	super.onResume();
-//    	
-//        final Display display = getWindowManager().getDefaultDisplay();
-//
-//		_imageScroll.postDelayed(new Runnable() {
-//	        public void run() {
-//	        	_imageScroll.scrollTo(display.getWidth() , 0);
-//        		//refreshInterface();
-//        		//redrawPage();
-//	        }
-//	    }, 100);
-//    }
-    
 	private void redrawPage() {
-		if (_currentPage - 1 >= 0)
-			drawPage(_imageViewPrev, _currentPage - 1);
 		
-		drawPage(_imageViewCurrent, _currentPage);
-
-		if (_currentPage + 1 <= _maxPage)
-			drawPage(_imageViewNext, _currentPage + 1);
+		switch (_direction)
+		{
+		case View.FOCUS_LEFT:
+			_imageViewNext.setImageDrawable(_imageViewCurrent.getDrawable());
+			_imageViewCurrent.setImageDrawable(_imageViewPrev.getDrawable());
+			if (_currentPage - 1 >= 0) drawPage(_imageViewPrev, _currentPage - 1);
+			break;
+		case View.FOCUS_RIGHT:
+			_imageViewPrev.setImageDrawable(_imageViewCurrent.getDrawable());
+			_imageViewCurrent.setImageDrawable(_imageViewNext.getDrawable());
+			if (_currentPage + 1 < _maxPage) drawPage(_imageViewNext, _currentPage + 1);
+			break;
+		default:
+			if (_currentPage - 1 >= 0) drawPage(_imageViewPrev, _currentPage - 1);
+			if (_currentPage + 1 < _maxPage) drawPage(_imageViewNext, _currentPage + 1);
+			drawPage(_imageViewCurrent, _currentPage);
+		}
+		_direction = 0;
 	}
 
 	private void drawPage(ImageView image, float page) {
@@ -231,6 +228,7 @@ public class FullScreenActivity extends Activity implements OnClickListener, OnT
             	{
             		if (event.getX() - _lastX > 0)
             		{
+            			_direction = View.FOCUS_LEFT;
             			_imageScroll.fullScroll(View.FOCUS_LEFT);
             			if (_currentPage > 0) _currentPage--;
             			else
@@ -241,6 +239,7 @@ public class FullScreenActivity extends Activity implements OnClickListener, OnT
             		}
             		else
             		{
+            			_direction = View.FOCUS_RIGHT;
             			_imageScroll.fullScroll(View.FOCUS_RIGHT);
             			if (_currentPage + 1 < _maxPage) _currentPage++;
             			else
@@ -291,9 +290,15 @@ public class FullScreenActivity extends Activity implements OnClickListener, OnT
     		((FrameLayout) findViewById(R.id.pagePrev)).setVisibility(View.GONE);
     		_imageScroll.scrollTo(0 , 0);
     	}
+		if (_currentPage == _maxPage - 1)
+    	{
+    		((FrameLayout) findViewById(R.id.pageNext)).setVisibility(View.GONE);
+        	_imageScroll.scrollTo(display.getWidth() , 0);
+    	}
     	else
     	{
         	((FrameLayout) findViewById(R.id.pagePrev)).setVisibility(View.VISIBLE);
+    		((FrameLayout) findViewById(R.id.pageNext)).setVisibility(View.VISIBLE);
         	_imageScroll.scrollTo(display.getWidth() , 0);
     	}
 	}
