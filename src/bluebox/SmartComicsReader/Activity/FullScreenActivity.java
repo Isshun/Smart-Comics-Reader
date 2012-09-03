@@ -18,6 +18,7 @@
 package bluebox.SmartComicsReader.Activity;
 
 import java.io.File;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -26,6 +27,7 @@ import java.util.List;
 import bluebox.SmartComicsReader.R;
 import bluebox.SmartComicsReader.Fragment.BookDetailFragment;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -36,11 +38,15 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.widget.AbsListView.OnScrollListener;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.Scroller;
 import android.widget.TextView;
 
 public class FullScreenActivity extends Activity implements OnClickListener, OnTouchListener
@@ -58,6 +64,8 @@ public class FullScreenActivity extends Activity implements OnClickListener, OnT
 	private int						_lastY;
 	private boolean 				_onScroll;
 	private int 					_direction;
+	private boolean _ready = true;
+	private List<ImageView> _imageList;
 	
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -72,7 +80,8 @@ public class FullScreenActivity extends Activity implements OnClickListener, OnT
 
         _imageScroll = ((HorizontalScrollView) findViewById(R.id.imageScroll));
         _imageScroll.setOnTouchListener(this);
-    	
+        
+        
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)((FrameLayout)findViewById(R.id.pagePrev)).getLayoutParams();
         params.width = getWindowManager().getDefaultDisplay().getWidth();
         
@@ -84,6 +93,22 @@ public class FullScreenActivity extends Activity implements OnClickListener, OnT
         _imageViewPrev = ((ImageView) findViewById(R.id.imageViewPrev));
         _imageViewCurrent= ((ImageView) findViewById(R.id.imageViewCurrent));
         _imageViewNext = ((ImageView) findViewById(R.id.imageViewNext));
+
+        _imageList = new ArrayList<ImageView>();
+        
+		Bitmap empty = BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_search);
+        
+        for (int i = 0; i < 30; i++)
+        {
+        	FrameLayout layout = new FrameLayout(this);
+        	layout.setLayoutParams(params);
+        	
+        	ImageView image = new ImageView(this);
+        	image.setImageBitmap(empty);
+        	layout.addView(image);
+        	_imageList.add(image);
+        	((LinearLayout) findViewById(R.id.imageContainer)).addView(layout);
+        }
         
         //_imageView.setOnTouchListener(this);
         
@@ -97,24 +122,33 @@ public class FullScreenActivity extends Activity implements OnClickListener, OnT
 
 	private void redrawPage() {
 		
-		switch (_direction)
+		for (int i = (int)_currentPage - 1; i <= (int)_currentPage + 1; i++)
 		{
-		case View.FOCUS_LEFT:
-			_imageViewNext.setImageDrawable(_imageViewCurrent.getDrawable());
-			_imageViewCurrent.setImageDrawable(_imageViewPrev.getDrawable());
-			if (_currentPage - 1 >= 0) drawPage(_imageViewPrev, _currentPage - 1);
-			break;
-		case View.FOCUS_RIGHT:
-			_imageViewPrev.setImageDrawable(_imageViewCurrent.getDrawable());
-			_imageViewCurrent.setImageDrawable(_imageViewNext.getDrawable());
-			if (_currentPage + 1 < _maxPage) drawPage(_imageViewNext, _currentPage + 1);
-			break;
-		default:
-			if (_currentPage - 1 >= 0) drawPage(_imageViewPrev, _currentPage - 1);
-			if (_currentPage + 1 < _maxPage) drawPage(_imageViewNext, _currentPage + 1);
-			drawPage(_imageViewCurrent, _currentPage);
+			if (i >= 0 && i < _maxPage)
+			{
+				ImageView image = _imageList.get(i);
+				drawPage(image, i);
+			}
 		}
-		_direction = 0;
+		
+//		switch (_direction)
+//		{
+//		case View.FOCUS_LEFT:
+//			_imageViewNext.setImageDrawable(_imageViewCurrent.getDrawable());
+//			_imageViewCurrent.setImageDrawable(_imageViewPrev.getDrawable());
+//			if (_currentPage - 1 >= 0) drawPage(_imageViewPrev, _currentPage - 1);
+//			break;
+//		case View.FOCUS_RIGHT:
+//			_imageViewPrev.setImageDrawable(_imageViewCurrent.getDrawable());
+//			_imageViewCurrent.setImageDrawable(_imageViewNext.getDrawable());
+//			if (_currentPage + 1 < _maxPage) drawPage(_imageViewNext, _currentPage + 1);
+//			break;
+//		default:
+//			if (_currentPage - 1 >= 0) drawPage(_imageViewPrev, _currentPage - 1);
+//			if (_currentPage + 1 < _maxPage) drawPage(_imageViewNext, _currentPage + 1);
+//			drawPage(_imageViewCurrent, _currentPage);
+//		}
+//		_direction = 0;
 	}
 
 	private void drawPage(ImageView image, float page) {
@@ -209,8 +243,6 @@ public class FullScreenActivity extends Activity implements OnClickListener, OnT
         {
             case MotionEvent.ACTION_DOWN:
             {
-    			_onScroll = true;
-    			
             	_lastX = (int)event.getX();
             	_lastY = (int)event.getY();
         		break;
@@ -218,18 +250,14 @@ public class FullScreenActivity extends Activity implements OnClickListener, OnT
 
             case MotionEvent.ACTION_UP:
             {
-            	if (_onScroll == false) return false;
-            	_onScroll = false;
+            	//Log.w("bluebox.scr", String.format("%d %d", (int)event.getX(), (int)_lastX));
             	
-            	Log.w("bluebox.scr", String.format("%d %d", (int)event.getX(), (int)_lastX));
-            	
-            	if (Math.abs(event.getX() - _lastX) > display.getWidth() / 10
-            			&& Math.abs(event.getX() - _lastX) > Math.abs(event.getY() - _lastY))
+            	if (Math.abs(event.getX() - _lastX) > 50)
+            			//&& Math.abs(event.getX() - _lastX) > Math.abs(event.getY() - _lastY))
             	{
             		if (event.getX() - _lastX > 0)
             		{
-            			_direction = View.FOCUS_LEFT;
-            			_imageScroll.fullScroll(View.FOCUS_LEFT);
+            			//_imageScroll.fullScroll(View.FOCUS_LEFT);
             			if (_currentPage > 0) _currentPage--;
             			else
         				{
@@ -239,8 +267,7 @@ public class FullScreenActivity extends Activity implements OnClickListener, OnT
             		}
             		else
             		{
-            			_direction = View.FOCUS_RIGHT;
-            			_imageScroll.fullScroll(View.FOCUS_RIGHT);
+            			//_imageScroll.fullScroll(View.FOCUS_RIGHT);
             			if (_currentPage + 1 < _maxPage) _currentPage++;
             			else
         				{
@@ -249,37 +276,72 @@ public class FullScreenActivity extends Activity implements OnClickListener, OnT
         				}
             		}
             		
-        			_imageScroll.postDelayed(new Runnable() {
-            	        public void run() {
-            	        	int x = -1;
+            		//_imageScroll.scrollTo((int)_currentPage * display.getWidth(), 0);
 
-            	        	while (x != _imageScroll.getScrollX())
-            	        	{
-                	        	Log.i("bluebox.scr", String.format("scroll: %d", _imageScroll.getScrollX()));
-                	        	
-            	        		x = _imageScroll.getScrollX();
-            	        		try {
-									Thread.sleep(100);
-								} catch (InterruptedException e) {
-									e.printStackTrace();
-								}
-            	        	}
-            	        	moveToPage();
-                    		refreshInterface();
-                    		redrawPage();
-            	        }
-            	    }, 750);
+            		//Flinger flinger = new Flinger();
+            		//flinger.start(50000);
+            		
+            		final int startPos = _imageScroll.getScrollX();
+            		final int endPos = (int)(_currentPage * display.getWidth());
+            		final int offset = (startPos - endPos) / 100;
+            		
+            		Log.w("bluebox.scr", "start: " + startPos);
+            		Log.w("bluebox.scr", "end: " + endPos);
+            		
+            	    new CountDownTimer(2000, 20) { 
+
+            	    	float _pos = startPos;
+            	    	
+            	        public void onTick(long millisUntilFinished) { 
+                    		_imageScroll.scrollTo((int)_pos, 0);
+                    		_pos += offset;
+            	        	//_imageScroll.scrollTo((int) (2000 - millisUntilFinished), 0); 
+            	        } 
+
+            	        public void onFinish() { 
+        	        		refreshInterface();
+        	        		redrawPage();
+            	        } 
+            	     }.start();
+
+            		return true;
             	}
-            	// scroll trop petit
-            	else
-            	{
-        			moveToPage();
-            	}
-        		return true;
-            	//break;
             }
         }
-        return false;
+		return false;
+//            		
+////        			_imageScroll.postDelayed(new Runnable() {
+////						public void run() {
+////            	        	int x = -1;
+////
+////            	        	while (x != _imageScroll.getScrollX())
+////            	        	{
+////                	        	Log.i("bluebox.scr", String.format("scroll: %d", _imageScroll.getScrollX()));
+////                	        	
+////            	        		x = _imageScroll.getScrollX();
+////            	        		try {
+////									Thread.sleep(100);
+////								} catch (InterruptedException e) {
+////									e.printStackTrace();
+////								}
+////            	        	}
+////            	        	moveToPage();
+////                    		refreshInterface();
+////                    		redrawPage();
+////                    		_ready = true;
+////            	        }
+////            	    }, 750);
+//            	}
+//            	// scroll trop petit
+//            	else
+//            	{
+//        			moveToPage();
+//            	}
+//        		return true;
+//            	//break;
+//            }
+//        }
+//        return false;
 	}
 
 	protected void moveToPage() {
@@ -301,5 +363,55 @@ public class FullScreenActivity extends Activity implements OnClickListener, OnT
     		((FrameLayout) findViewById(R.id.pageNext)).setVisibility(View.VISIBLE);
         	_imageScroll.scrollTo(display.getWidth() , 0);
     	}
+	}
+	
+	private class Flinger implements Runnable {
+	    private final Scroller scroller;
+
+	    private int lastX = 0;
+
+	    Flinger() {
+	        scroller = new Scroller(FullScreenActivity.this);
+	    }
+
+	    void start(int initialVelocity) {
+	        int initialX = _imageScroll.getScrollX();
+	        int maxX = Integer.MAX_VALUE; // or some appropriate max value in your code
+	        scroller.fling(initialX, 0, initialVelocity, 0, 0, maxX, 0, 10);
+	        Log.i("bluebox.scr", "starting fling at " + initialX + ", velocity is " + initialVelocity + "");
+
+	        lastX = initialX;
+	        _imageScroll.post(this);
+	    }
+
+	    public void run() {
+	        if (scroller.isFinished()) {
+		        Log.i("bluebox.scr", "finish fling at " + _imageScroll.getScrollX());
+	            Log.i("bluebox.scr", "scroller is finished, done with fling");
+	            return;
+	        }
+
+	        boolean more = scroller.computeScrollOffset();
+	        int x = scroller.getCurrX();
+	        int diff = lastX - x;
+	        if (diff != 0) {
+	        	_imageScroll.scrollBy(diff, 0);
+	            lastX = x;
+	        }
+
+	        if (more) {
+	        	_imageScroll.post(this);
+	        }
+	    }
+
+	    boolean isFlinging() {
+	        return !scroller.isFinished();
+	    }
+
+	    void forceFinished() {
+	        if (!scroller.isFinished()) {
+	            scroller.forceFinished(true);
+	        }
+	    }
 	}
 }
